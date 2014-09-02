@@ -56,7 +56,6 @@ class Mongos(object):
 class Mongod(object):
     """Used to backup the mongo server data
 
-    TODO: check if it's primary
     """
 
     def __init__(self, port):
@@ -74,10 +73,15 @@ class Mongod(object):
             dbpath = parsed['storage']['dbPath']
         return os.path.normpath(dbpath)
 
+    @property
+    def is_primary(self):
+        """Check if this mongod is primary"""
+        return self.conn.is_primary
 
     def fsync(self):
         """Lock write, and make sure all pending writes to datafile"""
         self.conn.fsync(lock=True)
+        assert self.conn.is_locked
         j_dir = os.path.join(self.dbpath, 'journal')
         while os.listdir(j_dir):
             time.sleep(1)
@@ -85,6 +89,7 @@ class Mongod(object):
     def unlock(self):
         """Unlock the mongodb server"""
         self.conn.unlock()
+        assert not self.conn.is_locked
 
     def backup_dbpath(self, backup_path):
         """Copy mongodb dbpath to backup_path"""

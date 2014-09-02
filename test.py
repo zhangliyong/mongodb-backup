@@ -29,7 +29,6 @@ class MongodTestCase(unittest.TestCase):
         self.assertTrue(self.mongod.conn.is_locked)
 
         self.mongod.unlock()
-        self.assertFalse(self.mongod.conn.is_locked)
 
     def test_backup_dbpath(self):
         """test backup_dbpath"""
@@ -43,7 +42,7 @@ def test_cli():
     """test mongodbbackup -p <port> <dst> """
     dst = tempfile.mkdtemp()
     runner = CliRunner()
-    result = runner.invoke(backup.main, ['-p', 27017, dst])
+    result = runner.invoke(backup.main, ['-p', 27017, '--primary-ok', dst])
     assert result.exit_code == 0
     assert os.listdir(dst)[0]
     shutil.rmtree(dst)
