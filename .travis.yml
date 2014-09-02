@@ -6,7 +6,10 @@ python:
   - "3.3"
   - "3.4"
 install:
+  - pip install -r requirements.txt
   - pip install coveralls
+services:
+  - mongodb
 script:
   - nosetests  --with-coverage --cover-package=utils,backup
 after_success:
