@@ -46,7 +46,7 @@ def main(ms_url, port, primary_ok, dst):
             click.echo('Begain copying dbpath......')
             mongod.backup_dbpath(dst)
 
-        # restore mongod and balancer
-        mongod.unlock()
+            # restore mongod and balancer
+            mongod.unlock()
 
     click.echo('Over!')
