@@ -8,11 +8,23 @@ from __future__ import (absolute_import, division, print_function,
 
 import os
 import os.path
+import glob
 import time
-from shutil import copytree
+from shutil import copytree, rmtree
 import click
 
 from pymongo import MongoClient
+
+
+def rollover(backup_path, data_name, backup_count):
+    """rollover, keep only specified count of backup datas.
+    if backup_count is 0, keep all data.
+    """
+    backup_datas = glob.glob("{0}/{1}-[0-9]*_[0-9]*".format(
+        backup_path, data_name))
+    backup_datas.sort()
+    for data in backup_datas[:-backup_count]:
+        rmtree(data)
 
 
 class Mongos(object):
@@ -74,6 +86,11 @@ class Mongod(object):
         return os.path.normpath(dbpath)
 
     @property
+    def data_name(self):
+        """return the mongod data directory name"""
+        return os.path.basename(self.dbpath)
+
+    @property
     def is_primary(self):
         """Check if this mongod is primary"""
         return self.conn.is_primary
@@ -93,7 +110,6 @@ class Mongod(object):
 
     def backup_dbpath(self, backup_path):
         """Copy mongodb dbpath to backup_path"""
-        data_dir = os.path.basename(self.dbpath)
         date_ext = time.strftime("%Y%m%d_%H%M%S")
-        dst_data_dir = "{0}-{1}".format(data_dir, date_ext)
-        copytree(self.dbpath, os.path.join(backup_path, dst_data_dir))
+        dst_data_name = "{0}-{1}".format(self.data_name, date_ext)
+        copytree(self.dbpath, os.path.join(backup_path, dst_data_name))

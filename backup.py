@@ -4,6 +4,8 @@
 
 First stop balancer on mongos, and wait the running balancer
 to stop, then fsync the mongod instance, and backup the dbpath.
+
+TODO: add data rotate
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -11,21 +13,23 @@ from __future__ import (absolute_import, division, print_function,
 
 import click
 
-from utils import Mongod, Mongos
+from utils import Mongod, Mongos, rollover
 
 
 @click.command()
-@click.option('--ms_url', envvar='MONGOS_URL',
+@click.option('--ms-url', envvar='MONGOS_URL',
         help='Mongos url, used to stop and start balancer')
 @click.option('--port', '-p', default=27017,
         help='The port mongod(need backup) listening on')
 @click.option('--primary-ok', is_flag=True,
         help='Confirm to backup from primary')
+@click.option('--backup-count', default=0,
+        help='Number of backups to keep')
 @click.argument('dst',
         type=click.Path(exists=True, file_okay=False, writable=True,
             resolve_path=True))
-def main(ms_url, port, primary_ok, dst):
-    """Entrance
+def main(ms_url, port, primary_ok, backup_count, dst):
+    """MongoDB backup CLI
 
     DST: The directory to store backup data
     """
@@ -48,5 +52,7 @@ def main(ms_url, port, primary_ok, dst):
 
             # restore mongod and balancer
             mongod.unlock()
+            # rollover
+            rollover(dst, mongod.data_name, backup_count)
 
     click.echo('Over!')
