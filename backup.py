@@ -39,8 +39,8 @@ def main(ms_url, port, primary_ok, backup_count, dst):
         mongod = Mongod(port)
         can_backup = primary_ok
         if not primary_ok and mongod.is_primary:
-            if click.confirm('This instance is primary, '
-                    'it will block all writing when backuping, '
+            if click.confirm('This instance is primary,\n'
+                    'it will block all writing when backuping,\n'
                     'do you want to continue?'):
                 can_backup = True
 
