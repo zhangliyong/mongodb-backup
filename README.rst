@@ -31,6 +31,7 @@ Example
 * Backup a standalone mongod instance.
 
 .. code-block:: bash
+
   $ mongodbbackup -p <port> --primary-ok <backup_dir>
 
   **Caution:** it will block all writes.
@@ -38,12 +39,14 @@ Example
 * Backup a replication, run the follow command on a secondary server.
 
 .. code-block:: bash
+
   $ mongodbbackup -p <secondary_port> <backup_dir>
 
 * Backup a cluster, backup a config server and each shard. If you have
   two shards, you need to run the follow command three times.
 
 .. code-block:: bash
+
   $ mongodbbackup --ms-url <mongos_url> -p <port> <backup_dir>
 
 
