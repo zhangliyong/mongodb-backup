@@ -34,7 +34,7 @@ Example
 
   $ mongodbbackup -p <port> --primary-ok <backup_dir>
 
-  **Caution:** it will block all writes.
+**Caution:** it will block all writes.
 
 * Backup a replication, run the follow command on a secondary server.
 
