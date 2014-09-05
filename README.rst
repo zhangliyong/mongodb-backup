@@ -30,9 +30,9 @@ Example
 
 * Backup a standalone mongod instance.
 
-.. code-block:: bash
+  .. code-block:: bash
 
-  $ mongodbbackup -p <port> --primary-ok <backup_dir>
+    $ mongodbbackup -p <port> --primary-ok <backup_dir>
 
 **Caution:** it will block all writes.
 
