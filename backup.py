@@ -12,7 +12,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import click
 
-from .utils import Mongod, Mongos, rollover
+from utils import Mongod, Mongos, rollover
 
 
 @click.command()
