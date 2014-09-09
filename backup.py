@@ -49,11 +49,13 @@ def main(ms_url, port, primary_ok, backup_count, dst):
             click.echo('Fsync mongod to stop writing......')
             mongod.fsync()
             click.echo('Begain copying dbpath......')
-            mongod.backup_dbpath(dst)
-            click.echo('Copy over!')
+            try:
+                mongod.backup_dbpath(dst)
+                click.echo('Copy over!')
+            finally:
+                # restore mongod and balancer
+                mongod.unlock()
 
-            # restore mongod and balancer
-            mongod.unlock()
             # rollover
             rollover(dst, mongod.data_name, backup_count)
             click.echo('Done!')
