@@ -36,8 +36,10 @@ def main(ms_url, port, primary_ok, backup_count, dst):
     with Mongos(ms_url):
         # backup mongod data
         mongod = Mongod(port)
-        can_backup = primary_ok
-        if not primary_ok and mongod.is_primary:
+        can_backup = False
+        if not mongod.is_primary:
+            can_backup = True
+        elif not primary_ok:
             if click.confirm('This instance is primary,\n'
                     'it will block all writing when backuping,\n'
                     'do you want to continue?'):
@@ -48,10 +50,12 @@ def main(ms_url, port, primary_ok, backup_count, dst):
             mongod.fsync()
             click.echo('Begain copying dbpath......')
             mongod.backup_dbpath(dst)
+            click.echo('Copy over!')
 
             # restore mongod and balancer
             mongod.unlock()
             # rollover
             rollover(dst, mongod.data_name, backup_count)
-
-    click.echo('Over!')
+            click.echo('Done!')
+        else:
+            click.echo('Nothing to do!')
