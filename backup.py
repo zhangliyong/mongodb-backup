@@ -5,7 +5,6 @@
 First stop balancer on mongos, and wait the running balancer
 to stop, then fsync the mongod instance, and backup the dbpath.
 
-TODO: add data rotate
 """
 
 from __future__ import (absolute_import, division, print_function,
@@ -13,7 +12,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import click
 
-from utils import Mongod, Mongos, rollover
+from .utils import Mongod, Mongos, rollover
 
 
 @click.command()

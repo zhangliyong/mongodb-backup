@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
         name='mongodb-backup',
-        version='0.1',
+        version='0.1.2',
         py_modules=['backup'],
         entry_points={
             'console_scripts': [
