@@ -15,6 +15,14 @@ Install
 
     $ pip install mongodb-backup
 
+Test
+----
+
+Start a mongod instance on port ``27017``.
+
+Run ``py.test test.py``.
+
+
 Usage
 -----
 
