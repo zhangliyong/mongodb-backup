@@ -7,8 +7,15 @@ import shutil
 import tempfile
 import unittest
 from click.testing import CliRunner
-from utils import Mongod
+from utils import Mongod, tm_echo
 import backup
+
+
+def test_tm_echo(capsys):
+    """Test tm_echo"""
+    tm_echo('Hello', '2014-01-01: 00:00:00')
+    out, _ = capsys.readouterr()
+    assert out.strip() == '[2014-01-01: 00:00:00] Hello'
 
 
 class MongodTestCase(unittest.TestCase):

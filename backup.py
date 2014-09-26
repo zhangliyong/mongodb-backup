@@ -12,7 +12,7 @@ from __future__ import (absolute_import, division, print_function,
 
 import click
 
-from utils import Mongod, Mongos, rollover
+from utils import Mongod, Mongos, rollover, tm_echo
 
 
 @click.command()
@@ -37,27 +37,27 @@ def main(ms_url, port, primary_ok, backup_count, dst):
         # backup mongod data
         mongod = Mongod(port)
         can_backup = False
-        if not mongod.is_primary:
+        if not mongod.is_primary or primary_ok:
             can_backup = True
-        elif not primary_ok:
+        else:
             if click.confirm('This instance is primary,\n'
                     'it will block all writing when backuping,\n'
                     'do you want to continue?'):
                 can_backup = True
 
         if can_backup:
-            click.echo('Fsync mongod to stop writing......')
+            tm_echo('Fsync mongod to stop writing......')
             mongod.fsync()
-            click.echo('Begain copying dbpath......')
+            tm_echo('Begain copying dbpath......')
             try:
                 mongod.backup_dbpath(dst)
-                click.echo('Copy over!')
+                tm_echo('Copy over!')
             finally:
                 # restore mongod and balancer
                 mongod.unlock()
 
             # rollover
             rollover(dst, mongod.data_name, backup_count)
-            click.echo('Done!')
+            tm_echo('Done!')
         else:
             click.echo('Nothing to do!')
