@@ -18,7 +18,7 @@ from pymongo import MongoClient
 
 def tm_echo(msg, tm=None, **kargs):
     """Echo the message beginning with time"""
-    tm = tm or time.strftime("%Y-%m-%d %H:%M:S")
+    tm = tm or time.strftime("%Y-%m-%d %H:%M:%S")
     click.echo('[{}] {}'.format(tm, msg), **kargs)
 
 
